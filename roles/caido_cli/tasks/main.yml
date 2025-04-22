@@ -1,0 +1,86 @@
+---
+- name: Initialize caido-cli role
+  block:
+    - name: Check if caido-cli is installed
+      ansible.builtin.command: >-
+        {{ caido_cli_install_path }}/caido-cli --version
+      register: __caido_cli_check
+      failed_when: false
+      changed_when: false
+
+    - name: Get caido-cli latest version
+      register: __caido_cli_latest
+      when: >-
+        (caido_cli_version is undefined and __caido_cli_check.rc != 0)
+        or caido_cli_version is defined and caido_cli_version == 'latest'
+      ansible.builtin.uri:
+        url: "{{ caido_cli_metadata_url }}"
+
+- name: Install golang
+  vars:
+    caido_cli_install_version: >-
+      {{
+        (
+          __caido_cli_latest.json.version
+        ) if (
+          (caido_cli_version is undefined and __caido_cli_check.rc != 0)
+          or caido_cli_version == 'latest'
+        ) else caido_cli_version if caido_cli_version is defined
+      }}
+    caido_cli_platform: >-
+      {{
+        {
+          'darwin': 'macos',
+          'windows': 'windows',
+          'linux': 'linux',
+        }.get((ansible_system | lower), '')
+      }}
+    caido_cli_architecture: "{{ ansible_architecture | lower }}"
+  block:
+    - name: Ensure compatible caido-cli target
+      ansible.builtin.assert:
+        that:
+          - caido_cli_platform != ''
+          - caido_cli_architecture in ('x86_64', 'aarch64')
+        success_msg: >-
+          Compatible target found:
+          {{ caido_cli_platform }}/{{ caido_cli_architecture }}
+        fail_msg: >-
+          Incompatible target found:
+          {{ ansible_system | lower }} {{ ansible_architecture | lower }}
+
+    - name: Install caido
+      when:
+        - caido_cli_install_version is defined
+        - >-
+          __caido_cli_check.stdout !=
+          'Caido ' + caido_cli_install_version
+      block:
+        - name: Ensure caido-cli install directory
+          ansible.builtin.file:
+            path: "{{ caido_cli_install_path }}"
+            state: directory
+            mode: '755'
+
+        - name: Download and unzip
+          ansible.builtin.unarchive:
+            remote_src: true
+            src: >-
+              {{
+                caido_cli_base_url + '/'
+                + 'v' + caido_cli_install_version + '/'
+                + 'caido-cli-v' + caido_cli_install_version
+                + '-' + caido_cli_platform + '-' + caido_cli_architecture
+                + '.tar.gz'
+              }}
+            dest: "{{ caido_cli_install_path }}"
+            mode: '0755'
+
+- name: Ensure symlink is present
+  when:
+    - caido_cli_symlink is defined
+    - caido_cli_symlink != ''
+  ansible.builtin.file:
+    src: "{{ caido_cli_install_path }}/caido-cli"
+    dest: "{{ caido_cli_symlink }}"
+    state: link
