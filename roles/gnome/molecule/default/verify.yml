@@ -1,0 +1,21 @@
+---
+- name: Verify gnome is installed
+  hosts: all
+  tasks:
+    - name: Check gnome is installed
+      ansible.builtin.command: >-
+        gnome-shell --version
+        && gnome-session --version
+        && gdm3 --version
+        && gnome-tweaks --version
+        && gnome-terminal --version
+        && gnome-screenshot --version
+        && gnome-characters --help
+        && nautilus --help
+        && gnome-control-center --version
+      register: gnome_check
+      changed_when: false
+    - name: Assert gnome installed
+      ansible.builtin.assert:
+        that:
+          - gnome_check.rc == 0

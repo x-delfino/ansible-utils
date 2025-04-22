@@ -1,0 +1,10 @@
+---
+- name: Install all util roles
+  hosts: "{{target|default('all')}}"
+  roles:
+    - x_delfino.utils.chromium
+    - x_delfino.utils.firefox
+    - x_delfino.utils.ghostty
+    - x_delfino.utils.gnome
+    - x_delfino.utils.neovim
+    - x_delfino.utils.zsh

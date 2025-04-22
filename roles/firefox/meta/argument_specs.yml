@@ -1,0 +1,28 @@
+---
+argument_specs:
+  main:
+    short_description: Main entrypoint for firefox role
+    options:
+      firefox_apt_key_path:
+        type: "str"
+        required: false
+        default: /etc/apt/keyrings/mozilla.asc
+        description: The path to store the mozilla apt key.
+
+      firefox_apt_key_url:
+        type: "str"
+        required: false
+        default: https://packages.mozilla.org/apt/repo-signing-key.gpg
+        description: The url to download the mozilla apt signing key.
+
+      firefox_apt_source_path:
+        type: "str"
+        required: false
+        default: /etc/apt/sources.list.d/mozilla.sources
+        description: The path to store the mozilla apt repository source.
+
+      firefox_apt_url:
+        type: "str"
+        required: false
+        default: https://packages.mozilla.org/apt
+        description: The url of the mozilla apt repository.

@@ -1,0 +1,96 @@
+---
+- name: Initialize neovim role
+  block:
+
+    - name: Check if neovim is installed
+      ansible.builtin.command: "{{ neovim_install_path }}/bin/nvim --version"
+      register: __neovim_check
+      failed_when: false
+      changed_when: false
+
+    - name: Get neovim latest version
+      register: __neovim_latest
+      when: >-
+        (neovim_version is undefined and __neovim_check.rc != 0)
+        or neovim_version is defined and neovim_version == 'latest'
+      x_delfino.common.github_latest:
+        repo: "{{ neovim_repo }}"
+
+- name: Install neovim
+  vars:
+    neovim_install_version: >-
+      {{
+        __neovim_latest.latest_version if (
+          (neovim_version is undefined and __neovim_check.rc != 0)
+          or neovim_version == 'latest'
+        ) else ('v' + neovim_version) if neovim_version is defined
+      }}
+  block:
+    - name: Install neovim
+      when:
+        - neovim_install_version is defined
+        - >-
+          __neovim_check.stdout is not match(
+            'NVIM ' + neovim_install_version + '.*'
+          )
+      block:
+        - name: Create temp directory
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: neovim
+          register: __neovim_tmp_dir
+          no_log: true
+
+        - name: Ensure neovim install directory
+          ansible.builtin.file:
+            path: "{{ neovim_install_path }}"
+            state: directory
+            mode: '755'
+
+        - name: Install neovim dependencies
+          become: true
+          ansible.builtin.apt:
+            name:
+              - ninja-build
+              - gettext
+              - cmake
+              - build-essential
+              - pkg-config
+              - libtool
+              - autoconf
+              - automake
+              - software-properties-common
+            state: present
+            update_cache: true
+
+        - name: Clone neovim repo
+          ansible.builtin.git:
+            repo: https://github.com/{{ neovim_repo }}.git
+            dest: "{{ __neovim_tmp_dir.path }}"
+            version: "{{ neovim_install_version }}"
+            update: true
+
+        - name: Compile neovim
+          community.general.make:
+            chdir: "{{ __neovim_tmp_dir.path }}"
+            params:
+              CMAKE_BUILD_TYPE: RelWithDebInfo
+              CMAKE_EXTRA_FLAGS: >-
+                -DCMAKE_INSTALL_PREFIX={{ neovim_install_path }}
+
+        - name: Install neovim
+          community.general.make:
+            chdir: "{{ __neovim_tmp_dir.path }}"
+            target: install
+      always:
+        - name: Remove temp directory
+          ansible.builtin.file:
+            path: "{{ __neovim_tmp_dir.path }}"
+            state: absent
+          when: __neovim_tmp_dir is defined
+          no_log: true
+
+- name: Ensure neovim in path
+  when: neovim_ensure_path
+  x_delfino.common.env_path:
+    path: "{{ neovim_install_path }}/bin"

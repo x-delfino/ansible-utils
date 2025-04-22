@@ -1,0 +1,58 @@
+---
+argument_specs:
+  main:
+    short_description: Main entrypoint for gnome role
+    options:
+      gnome_install_tweaks:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-tweaks.
+
+      gnome_install_terminal:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-terminal.
+
+      gnome_install_screenshot:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-screenshot.
+
+      gnome_install_characters:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-characters.
+
+      gnome_install_sysmon:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-system-monitor.
+
+      gnome_install_nautilus:
+        type: "bool"
+        required: false
+        default: false
+        description: Install nautilus.
+
+      gnome_install_controlcenter:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-control-center.
+
+      gnome_install_backgrounds:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-backgrounds.
+
+      gnome_install_icontheme:
+        type: "bool"
+        required: false
+        default: false
+        description: Install gnome-icon-theme.

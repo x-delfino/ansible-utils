@@ -1,0 +1,32 @@
+---
+namespace: x_delfino
+name: utils
+version: 0.0.9
+description: collection of utils
+tags:
+ - tools
+authors:
+ - delfino
+
+readme: README.md
+license:
+ - Apache-2.0
+license_file: ''
+
+dependencies:
+ x_delfino.languages: ">=0.0.1"
+ x_delfino.common: ">=0.0.1"
+ community.general: ">=0.1.0"
+
+repository: https://github.com/x-delfino/ansible-utils
+documentation: https://github.com/x-delfino/ansible-utils
+homepage: https://github.com/x-delfino/ansible-utils
+issues: https://github.com/x-delfino/ansible-utils/issues
+
+build_ignore:
+ - '*.ansible'
+ - .gitignore
+ - build
+ - molecule
+ - automation
+ - Taskfile.yml

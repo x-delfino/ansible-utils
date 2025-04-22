@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  author: delfino
+  role_name: chromium
+  description: >-
+    Chromium is an open-source browser project that aims to build a
+    safer, faster, and more stable way for all users to experience the web.
+
+  license: Apache-2.0
+
+  min_ansible_version: '2.1'
+
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+        - bullseye
+    - name: Ubuntu
+      versions:
+        - noble
+    - name: Kali
+      versions:
+        - all
+
+  galaxy_tags: []
+
+dependencies:
+  - x_delfino.common.unzip

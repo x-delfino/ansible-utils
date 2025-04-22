@@ -1,0 +1,23 @@
+---
+- name: Define dependencies
+  ansible.builtin.set_fact:
+    gnome_dependencies: >-
+      {{
+        [ 'gnome-shell', 'gnome-session', 'gdm3' ] +
+        (['gnome-tweaks'] if gnome_install_tweaks else []) +
+        (['gnome-terminal'] if gnome_install_terminal else []) +
+        (['gnome-screenshot'] if gnome_install_screenshot else []) +
+        (['gnome-characters'] if gnome_install_characters else []) +
+        (['gnome-system-monitor'] if gnome_install_sysmon else []) +
+        (['nautilus'] if gnome_install_nautilus else []) +
+        (['gnome-control-center'] if gnome_install_controlcenter else []) +
+        (['gnome-backgrounds'] if gnome_install_backgrounds else []) +
+        (['gnome-icon-theme'] if gnome_install_icontheme else [])
+      }}
+
+- name: Install gnome
+  ansible.builtin.apt:
+    package: "{{ gnome_dependencies }}"
+    state: present
+    update_cache: true
+  become: true

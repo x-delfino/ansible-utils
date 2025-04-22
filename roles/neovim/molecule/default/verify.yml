@@ -1,0 +1,12 @@
+---
+- name: Verify golang is installed
+  hosts: all
+  tasks:
+    - name: Check golang is installed
+      ansible.builtin.command: ~/.local/neovim/bin/nvim --version
+      register: neovim_check
+      changed_when: false
+    - name: Assert neovim installed
+      ansible.builtin.assert:
+        that:
+          - neovim_check.rc == 0

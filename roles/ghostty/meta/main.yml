@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  author: delfino
+  role_name: ghostty
+  description: >-
+    Ghostty is a terminal emulator that differentiates itself by being fast,
+    feature-rich, and native.
+
+  license: Apache-2.0
+
+  min_ansible_version: '2.1'
+
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+    - name: Kali
+      versions:
+        - all
+
+  galaxy_tags: []
+
+dependencies:
+  - x_delfino.common.git

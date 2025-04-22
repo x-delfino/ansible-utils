@@ -1,0 +1,15 @@
+---
+- name: Test gnome install
+  hosts: all
+  roles:
+    - role: x_delfino.utils.gnome
+      vars:
+        gnome_install_tweaks: true
+        gnome_install_terminal: true
+        gnome_install_screenshot: true
+        gnome_install_characters: true
+        gnome_install_sysmon: true
+        gnome_install_nautilus: true
+        gnome_install_controlcenter: true
+        gnome_install_backgrounds: true
+        gnome_install_icontheme: true

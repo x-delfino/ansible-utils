@@ -1,0 +1,76 @@
+---
+- name: Initialize ghostty role
+  block:
+    - name: Check if ghostty is installed
+      ansible.builtin.command: >-
+        {{ ghostty_install_path }}/bin/ghostty --version
+      register: __ghostty_check
+      failed_when: false
+      changed_when: false
+
+- name: Install ghostty
+  when: >-
+    (__ghostty_check.rc != 0) or
+    (
+      ghostty_version != '' and
+      (
+        __ghostty_check.stdout is not match(
+          'Ghostty ' + ghostty_version + '.*'
+        )
+      )
+    )
+  block:
+    - name: Create temp directory
+      no_log: true
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: ghostty
+      register: __ghostty_tmp_dir
+
+    - name: Install zig
+      ansible.builtin.include_role:
+        name: x_delfino.languages.zig
+      vars:
+        zig_version: 0.13.0
+
+    - name: Install dependencies
+      become: true
+      ansible.builtin.apt:
+        name:
+          - libgtk-4-dev
+          - libadwaita-1-dev
+          - blueprint-compiler
+          - gettext
+        state: present
+        update_cache: true
+
+    - name: Clone ghostty repo
+      ansible.builtin.git:
+        repo: "https://github.com/{{ ghostty_repo }}"
+        dest: "{{ __ghostty_tmp_dir.path }}"
+        version: "v{{ ghostty_version }}"
+        update: true
+
+    - name: Compile ghostty
+      register: __ghostty_compile
+      ansible.builtin.command:
+        chdir: "{{ __ghostty_tmp_dir.path }}"
+        argv:
+          - "{{ ghostty_zig_path }}"
+          - build
+          - -p
+          - "{{ ghostty_install_path }}"
+          - -Doptimize=ReleaseFast
+      changed_when: __ghostty_compile.rc == 0
+  always:
+    - name: Remove temp directory
+      no_log: true
+      ansible.builtin.file:
+        path: "{{ __ghostty_tmp_dir.path }}"
+        state: absent
+      when: __ghostty_tmp_dir is defined
+
+- name: Ensure ghostty in path
+  when: ghostty_ensure_path
+  x_delfino.common.env_path:
+    path: "{{ ghostty_install_path }}"

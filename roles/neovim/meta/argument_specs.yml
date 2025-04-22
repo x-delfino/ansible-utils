@@ -1,0 +1,30 @@
+---
+argument_specs:
+  main:
+    short_description: Main entrypoint for neovim role
+    options:
+      neovim_repo:
+        type: "str"
+        required: false
+        default: neovim/neovim
+        description: The GitHub repository to install neovim from.
+
+      neovim_version:
+        type: "str"
+        required: false
+        description: >
+          The neovim version to install (e.g. 0.11.0).
+          'latest' will ensure that the latest release is installed.
+          No value will just ensure that neovim is installed.
+
+      neovim_install_path:
+        type: "path"
+        required: false
+        default: "$HOME/.local/neovim"
+        description: The path to install neovim to.
+
+      neovim_ensure_path:
+        type: "bool"
+        required: false
+        default: true
+        description: Add the install path to PATH.

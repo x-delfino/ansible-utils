@@ -1,0 +1,12 @@
+---
+- name: Verify ghostty is installed
+  hosts: all
+  tasks:
+    - name: Check ghostty is installed
+      ansible.builtin.command: "$HOME/.local/bin/ghostty --version"
+      register: ghostty_check
+      changed_when: false
+    - name: Assert ghostty installed
+      ansible.builtin.assert:
+        that:
+          - ghostty_check.rc == 0
