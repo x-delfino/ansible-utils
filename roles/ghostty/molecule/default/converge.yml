@@ -1,5 +1,0 @@
----
-- name: Test ghostty install
-  hosts: all
-  roles:
-    - role: x_delfino.utils.ghostty
