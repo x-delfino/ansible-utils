@@ -1,0 +1,12 @@
+---
+- name: Verify caido-cli is installed
+  hosts: all
+  tasks:
+    - name: Check caido-cli is installed
+      ansible.builtin.command: ~/.local/caido/caido-cli --version
+      register: caido_cli_check
+      changed_when: false
+    - name: Assert caido-cli installed
+      ansible.builtin.assert:
+        that:
+          - caido_cli_check.rc == 0

@@ -1,8 +1,8 @@
 ---
 namespace: x_delfino
 name: utils
-version: 0.0.9
-description: collection of utils
+version: 0.0.10
+description: collection of tools and utilities
 tags:
  - tools
 authors:
@@ -30,3 +30,5 @@ build_ignore:
  - molecule
  - automation
  - Taskfile.yml
+ - .ansible-lint.yml
+ - .yamllint.yml
