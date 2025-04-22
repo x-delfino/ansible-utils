@@ -14,6 +14,7 @@ This collection is (mostly) tested on (both amd64 & aarch64):
 
 ## Roles
 
+- `azure_cli`
 - `chromium`
 - `firefox`
 - `ghostty`

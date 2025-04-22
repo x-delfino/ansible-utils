@@ -1,0 +1,12 @@
+---
+- name: Verify azure-cli is installed
+  hosts: all
+  tasks:
+    - name: Check azure-cli is installed
+      ansible.builtin.command: az version
+      register: azure_cli_check
+      changed_when: false
+    - name: Assert azure-cli installed
+      ansible.builtin.assert:
+        that:
+          - azure_cli_check.rc == 0
