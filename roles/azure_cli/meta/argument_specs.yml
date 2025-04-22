@@ -1,0 +1,28 @@
+---
+argument_specs:
+  main:
+    short_description: Main entrypoint for azure-cli role
+    options:
+      azure_cli_apt_key_path:
+        type: "str"
+        required: false
+        default: /etc/apt/keyrings/microsoft.asc
+        description: The path to store the microsoft apt key.
+
+      azure_cli_apt_key_url:
+        type: "str"
+        required: false
+        default: https://packages.microsoft.com/keys/microsoft.asc
+        description: The url to download the microsoft apt signing key.
+
+      azure_cli_apt_source_path:
+        type: "str"
+        required: false
+        default: /etc/apt/sources.list.d/azure-cli.sources
+        description: The path to store the azure-cli apt repository source.
+
+      azure_cli_apt_url:
+        type: "str"
+        required: false
+        default: https://packages.microsoft.com/repos/azure-cli/
+        description: The url of the azure-cli apt repository.

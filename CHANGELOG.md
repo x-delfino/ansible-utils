@@ -1,3 +1,7 @@
-# v0.0.8
+# v0.0.10
+
+Added `caido_cli` & `azure_cli` role
+
+# v0.0.9
 
 Removed legacy roles. Updating general logic
