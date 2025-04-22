@@ -1,0 +1,5 @@
+---
+- name: Test caido-cli install
+  hosts: all
+  roles:
+    - role: x_delfino.utils.caido_cli
