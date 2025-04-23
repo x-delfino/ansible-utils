@@ -94,3 +94,12 @@
   when: neovim_ensure_path
   x_delfino.common.env_path:
     path: "{{ neovim_install_path }}/bin"
+
+- name: Ensure symlink is present
+  when:
+    - neovim_symlink is defined
+    - neovim_symlink != ''
+  ansible.builtin.file:
+    src: "{{ neovim_install_path }}/bin/nvim"
+    dest: "{{ neovim_symlink }}"
+    state: link

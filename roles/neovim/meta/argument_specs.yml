@@ -28,3 +28,9 @@ argument_specs:
         required: false
         default: true
         description: Add the install path to PATH.
+
+      neovim_symlink:
+        type: "str"
+        required: false
+        default: "$HOME/.local/bin/nvim"
+        description: Path to create a symlink pointing to the neovim binary.
