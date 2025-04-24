@@ -42,7 +42,6 @@
           - blueprint-compiler
           - gettext
         state: present
-        update_cache: true
 
     - name: Clone ghostty repo
       ansible.builtin.git:

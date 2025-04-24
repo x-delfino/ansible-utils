@@ -42,20 +42,13 @@
           Signed-By: {{ azure_cli_apt_key_path }}
       become: true
 
-    - name: Ensure dependencies
+    - name: Ensure azure-cli & dependencies
       ansible.builtin.apt:
         name:
           - apt-transport-https
           - ca-certificates
           - gnupg
           - lsb-release
-        state: present
-        update_cache: true
-      become: true
-
-    - name: Ensure azure-cli installed
-      ansible.builtin.apt:
-        name:
           - azure-cli
         state: present
         update_cache: true

@@ -61,7 +61,6 @@
               - automake
               - software-properties-common
             state: present
-            update_cache: true
 
         - name: Clone neovim repo
           ansible.builtin.git:
@@ -99,7 +98,15 @@
   when:
     - neovim_symlink is defined
     - neovim_symlink != ''
-  ansible.builtin.file:
-    src: "{{ neovim_install_path }}/bin/nvim"
-    dest: "{{ neovim_symlink }}"
-    state: link
+  block:
+    - name: Ensure symlink dir
+      ansible.builtin.file:
+        path: "{{ neovim_symlink | dirname }}"
+        state: directory
+        mode: '755'
+
+    - name: Ensure symlink is present
+      ansible.builtin.file:
+        src: "{{ neovim_install_path }}/bin/nvim"
+        dest: "{{ neovim_symlink }}"
+        state: link
