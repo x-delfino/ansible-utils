@@ -31,12 +31,12 @@
   become: true
 
 - name: Check if Parallels Tools is installed
-  stat:
+  ansible.builtin.stat:
     path: /usr/lib/parallels-tools/version
   register: __gnome_parallels_tools
 
 - name: Check if libPrlWl.so.1 is present
-  stat:
+  ansible.builtin.stat:
     path: /usr/lib/libPrlWl.so.1
   register: __gnome_parallels_prlwl
   when: __gnome_parallels_tools.stat.exists
