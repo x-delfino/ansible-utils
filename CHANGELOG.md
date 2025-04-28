@@ -1,3 +1,10 @@
+# v0.0.12
+
+Removed apt cache updates
+Cleaned up dependencies
+Conditional reinstall of parallels tools post gnome install
+Reboot after parallels tools install
+
 # v0.0.11
 
 Added `neovim_symlink` to `neovim` role

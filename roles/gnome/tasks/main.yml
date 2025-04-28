@@ -3,7 +3,6 @@
   ansible.builtin.set_fact:
     gnome_dependencies: >-
       {{
-        [ 'gnome-shell', 'gnome-session', 'gdm3' ] +
         (['gnome-tweaks'] if gnome_install_tweaks else []) +
         (['gnome-terminal'] if gnome_install_terminal else []) +
         (['gnome-screenshot'] if gnome_install_screenshot else []) +
@@ -17,7 +16,48 @@
 
 - name: Install gnome
   ansible.builtin.apt:
+    package:
+      - gnome-shell
+      - gnome-session
+      - gdm3
+    state: present
+  become: true
+  register: __gnome_apt_install
+
+- name: Install gnome (optional)
+  ansible.builtin.apt:
     package: "{{ gnome_dependencies }}"
     state: present
-    update_cache: true
+  become: true
+
+- name: Check if Parallels Tools is installed
+  ansible.builtin.stat:
+    path: /usr/lib/parallels-tools/version
+  register: __gnome_parallels_tools
+
+- name: Check if libPrlWl.so.1 is present
+  ansible.builtin.stat:
+    path: /usr/lib/libPrlWl.so.1
+  register: __gnome_parallels_prlwl
+  when: __gnome_parallels_tools.stat.exists
+
+- name: Reinstall Parallels Tools
+  become: true
+  ansible.builtin.command: >-
+    /usr/lib/parallels-tools/install --install-unattended-with-deps
+  when:
+    - __gnome_parallels_tools.stat.exists
+    - not __gnome_parallels_prlwl.stat.exists
+  args:
+    creates: /usr/lib/libPrlWl.so.1
+  register: __gnome_parallels_tools_reinstall
+
+- name: Reboot if gnome or parallels tools were updated
+  ansible.builtin.reboot:
+    msg: Rebooting after gnome installation
+  when:
+    - ansible_service_mgr == 'systemd'
+    - >-
+        __gnome_apt_install is changed
+        or __gnome_parallels_tools_reinstall is changed
   become: true
