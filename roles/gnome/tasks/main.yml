@@ -55,7 +55,9 @@
 - name: Reboot if gnome or parallels tools were updated
   ansible.builtin.reboot:
     msg: Rebooting after gnome installation
-  when: >-
-    __gnome_apt_install is changed
-    or __gnome_parallels_tools_reinstall is changed
+  when:
+    - ansible_service_mgr == 'systemd'
+    - >-
+        __gnome_apt_install is changed
+        or __gnome_parallels_tools_reinstall is changed
   become: true
